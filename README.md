@@ -1,1 +1,0 @@
-# yama.github.io
