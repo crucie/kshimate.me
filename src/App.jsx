@@ -4,7 +4,8 @@ import './App.css'
 function App() {
   return (
     <>
-      <h1> Hello world</h1>
+    <div className='flex  w-screen justify-center text-9xl text-[#FFB300] opacity-100 hover:opacity-0'>The "world" is stupid!</div>
+      
     </>
   )
 }
