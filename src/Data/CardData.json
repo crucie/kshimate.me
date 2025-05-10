@@ -1,0 +1,25 @@
+{
+    "projects": [
+        {
+            "id": 1,
+            "title": "Personal Website",
+            "description": "A responsive personal portfolio website built with modern technologies",
+            "image": "/images/projects/personal-website.jpg",
+            "tags": ["React", "Tailwind CSS", "JavaScript"]
+        },
+        {
+            "id": 2,
+            "title": "Task Management App",
+            "description": "A full-stack application for tracking and managing projects and tasks",
+            "image": "/images/projects/task-app.jpg",
+            "tags": ["Node.js", "Express", "MongoDB", "React"]
+        },
+        {
+            "id": 3,
+            "title": "E-commerce Platform",
+            "description": "An online shopping platform with payment integration",
+            "image": "/images/projects/ecommerce.jpg",
+            "tags": ["Next.js", "Stripe", "Firebase", "Redux"]
+        }
+    ]
+}
