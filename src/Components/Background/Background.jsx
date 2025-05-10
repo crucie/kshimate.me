@@ -3,7 +3,7 @@ import React from 'react'
 function Background({children}) {
   return (
     <div 
-      className="w-full h-screen" 
+      className="w-full h-screen p-5" 
       style={{
         backgroundImage: `
           linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px), 
