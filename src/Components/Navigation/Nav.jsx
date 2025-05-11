@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Circle } from 'lucide-react';
 
 const Nav = () => {
   const navRef = useRef(null);
@@ -75,7 +75,7 @@ const Nav = () => {
       <nav
         ref={navRef}
         onMouseDown={onMouseDown}
-        className="fixed z-50 flex items-center justify-between gap-4 max-w-4xl bg-white/80 border border-black/10 shadow backdrop-blur-md rounded-xl px-4 py-2 transition-all duration-300"
+        className="fixed z-50 flex items-center justify-between gap-4 max-w-4xl border-1 border-black shadow backdrop-blur-md rounded-full px-4 py-2 transition-all duration-200"
         style={{
           top: `${position.y}px`,
           left: `${position.x}px`,
@@ -88,7 +88,7 @@ const Nav = () => {
               key={name}
               to={path}
               className={({ isActive }) =>
-                `${linkStyle} ${isActive ? 'bg-black/10' : ''}`
+                `${linkStyle} ${isActive ? 'underline font-bold' : ''}`
               }
             >
               {name}
@@ -114,8 +114,8 @@ const Nav = () => {
                   to={path}
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
-                    `px-4 py-2 hover:bg-black/5 text-sm ${
-                      isActive ? 'bg-black/10' : ''
+                    `px-4 py-2 hover:underline text-sm ${
+                      isActive ? 'underline' : ''
                     }`
                   }
                 >
@@ -130,10 +130,10 @@ const Nav = () => {
         <div
           id="nav-drag-icon"
           ref={dragIconRef}
-          className="ml-auto cursor-grab p-2 hover:bg-black/5 rounded-md transition"
+          className="ml-auto cursor-grab p-2 rounded-md transition "
           title="Drag Navbar"
         >
-          <Menu size={20} />
+          <Circle size={20} className='hover:bg-gray-500 hover:text-white active:bg-black rounded-full'/>
         </div>
       </nav>
     </>
