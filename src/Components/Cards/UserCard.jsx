@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import cardData from '../../Data/CardData.json'
 
-const UserCard = (cardData) => {
+const UserCard = () => {
 
-  cosnt {id, title} = cardData
-
+ 
 
   return (
     <div className=' flex flex-col p-4 items-center w-[300px] rounded-xl h-full aspect-[3/4] border-1 shadow-md transition-500 bg-gray-50 hover:scale-102 m-4'>

@@ -13,7 +13,11 @@ export default function Layout() {
             <Outlet/>
         <Footer/>
     </Background>
-    {/* <InteractiveGrid/> */}
+    {/* <InteractiveGrid>
+        <Header/>
+            <Outlet/>
+        <Footer/>
+    </InteractiveGrid> */}
     </>
   )
 }
