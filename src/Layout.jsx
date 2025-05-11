@@ -10,8 +10,7 @@ export default function Layout() {
     <>
     <Background>
         <Header/>
-            <Outlet/>
-        <Footer/>
+        <Outlet/>
     </Background>
     {/* <InteractiveGrid>
         <Header/>
