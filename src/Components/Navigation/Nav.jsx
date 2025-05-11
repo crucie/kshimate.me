@@ -17,7 +17,7 @@ const Nav = () => {
     { name: 'GAMEROOM', path: '/gameroom' },
   ];
 
-  const linkStyle = 'px-4 py-2 text-base rounded hover:bg-black/10 transition';
+  const linkStyle = 'px-4 py-2 text-base hover:underline rounded  transition';
 
   // Handle dragging only from the menu icon
   const onMouseDown = (e) => {
