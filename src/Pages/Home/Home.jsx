@@ -2,10 +2,12 @@ import React from 'react'
 import Header from '../../Components/Header/Header'
 import UserCard from '../../Components/Cards/UserCard'
 import Draggable from '../../Components/Quirky/Draggable'
+import Nav from '../../Components/Navigation/Nav'
 
 function Home() {
   return (
     <div>
+      
       YO
       <Draggable>
           <UserCard

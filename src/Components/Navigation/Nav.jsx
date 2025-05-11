@@ -1,119 +1,141 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-// import Logo from '../Logo';
-
-const Navlinks = ({ isMobile, closeMobileMenu }) => {
-  
-  const styling = "flex h-full text-xl px-auto py-3 items-center transition-colors duration-300" 
-
-  return (
-    <ul className={`flex ${isMobile ? 'flex-col w-full justify-center items-center gap-8 py-10 ' : 'text-black w-full gap-4 justify-center md:justify-between'}`}>
-      <li>
-        <NavLink 
-          to="/" 
-          className={({isActive}) => ` ${styling} ${isActive ? "bg-white/40" : "hover:bg-white/10"}`}
-          onClick={isMobile ? closeMobileMenu : undefined}
-        >
-          HOME
-        </NavLink>
-      </li>
-      <li>
-        <NavLink 
-          to="/projects" 
-          className={({isActive}) => `${styling}  ${isActive ? "bg-white/40 " : "hover:bg-white/10"}`}
-          onClick={isMobile ? closeMobileMenu : undefined}
-        >
-          PROJECTS
-        </NavLink>
-      </li>
-      <li>
-        <NavLink 
-          to="/blogs" 
-          className={({isActive}) => `${styling}  ${isActive ? "bg-white/40 " : "hover:bg-white/10"}`}
-          onClick={isMobile ? closeMobileMenu : undefined}
-        >
-          BLOGS
-        </NavLink>
-      </li>
-      <li>
-        <NavLink 
-          to="/gameroom" 
-          className={({isActive}) => `${styling}  ${isActive ? "bg-white/40 " : "hover:bg-white/10"}`}
-          onClick={isMobile ? closeMobileMenu : undefined}
-        >
-          GAMEROOM
-        </NavLink>
-      </li>
-    </ul>
-  );
-};
 
 const Nav = () => {
+  const navRef = useRef(null);
+  const dragIconRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
-  
-  // Prevent scrolling when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  const navLinks = [
+    { name: 'HOME', path: '/' },
+    { name: 'PROJECTS', path: '/projects' },
+    { name: 'BLOGS', path: '/blogs' },
+    { name: 'GAMEROOM', path: '/gameroom' },
+  ];
+
+  const linkStyle = 'px-4 py-2 text-base rounded hover:bg-black/10 transition';
+
+  // Handle dragging only from the menu icon
+  const onMouseDown = (e) => {
+    if (e.target.closest('#nav-drag-icon')) {
+      offset.current = {
+        x: e.clientX - navRef.current.getBoundingClientRect().left,
+        y: e.clientY - navRef.current.getBoundingClientRect().top,
+      };
+      setDragging(true);
     }
-    
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-  
-  const closeMobileMenu = () => {
-    setIsOpen(false);
   };
+
+  const onMouseMove = (e) => {
+    if (!dragging) return;
+    const x = e.clientX - offset.current.x;
+    const y = e.clientY - offset.current.y;
+    setPosition({ x, y });
+  };
+
+  const onMouseUp = () => setDragging(false);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [dragging]);
+
+  // Detect if navbar goes offscreen while scrolling and auto-fix
+  useEffect(() => {
+    const handleScroll = () => {
+      const navBounds = navRef.current?.getBoundingClientRect();
+      if (!navBounds) return;
+
+      const isMostlyOut =
+        navBounds.bottom < 40 ||
+        navBounds.top > window.innerHeight - 40 ||
+        navBounds.left > window.innerWidth - 40 ||
+        navBounds.right < 40;
+
+      if (isMostlyOut) {
+        // Snap back into view
+        setPosition({ x: 10, y: 10 });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
-      <nav className='w-1/3 flex justify-center mx-auto border-1 rounded-full z-50 '>
-
-        {/* Logo or Brand Name can go here */}
-        {/* <Logo width='auto' height='60px' className='h-10 md:h-12'/> */}
-        
-        <div className='hidden md:flex md:flex-wrap w-4/5  overflow-hidden'>
-          <Navlinks isMobile={false} />
+      <nav
+        ref={navRef}
+        onMouseDown={onMouseDown}
+        className="fixed z-50 flex items-center justify-between gap-4 max-w-4xl bg-white/80 border border-black/10 shadow backdrop-blur-md rounded-xl px-4 py-2 transition-all duration-300"
+        style={{
+          top: `${position.y}px`,
+          left: `${position.x}px`,
+        }}
+      >
+        {/* Desktop Links */}
+        <div className="hidden md:flex gap-3 items-center w-full justify-center">
+          {navLinks.map(({ name, path }) => (
+            <NavLink
+              key={name}
+              to={path}
+              className={({ isActive }) =>
+                `${linkStyle} ${isActive ? 'bg-black/10' : ''}`
+              }
+            >
+              {name}
+            </NavLink>
+          ))}
         </div>
-        
-        <div className='md:hidden flex items-center text-white'>
-          <button 
-            onClick={toggleNavbar} 
-            className="focus:outline-none p-2"
-            aria-label="Toggle menu"
+
+        {/* Mobile Dropdown Toggle */}
+        <div className="md:hidden relative">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 border rounded-md bg-white shadow"
+            aria-label="Toggle mobile menu"
           >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
+
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-black/10 z-50 flex flex-col">
+              {navLinks.map(({ name, path }) => (
+                <NavLink
+                  key={name}
+                  to={path}
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    `px-4 py-2 hover:bg-black/5 text-sm ${
+                      isActive ? 'bg-black/10' : ''
+                    }`
+                  }
+                >
+                  {name}
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Drag Handle (Menu icon) */}
+        <div
+          id="nav-drag-icon"
+          ref={dragIconRef}
+          className="ml-auto cursor-grab p-2 hover:bg-black/5 rounded-md transition"
+          title="Drag Navbar"
+        >
+          <Menu size={20} />
         </div>
       </nav>
-      
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className='fixed inset-0 bg-[#800020] z-50 flex flex-col justify-center items-center overflow-hidden'>
-          <div className="absolute top-4 right-6">
-            <button 
-              onClick={toggleNavbar} 
-              className="text-white focus:outline-none p-2"
-              aria-label="Close menu"
-            >
-              <X size={28} />
-            </button>
-          </div>
-          
-          <div className='flex flex-col items-center justify-center h-full w-full text-white'>
-            <Navlinks isMobile={true} closeMobileMenu={closeMobileMenu} />
-          </div>
-        </div>
-      )}
     </>
   );
 };

@@ -5,7 +5,7 @@ function Header() {
   return (
     <div className='w-full flex items-center justify-center ' >
         <div className='w-full '>
-          <Nav/>
+          {/* <Nav/> */}
         </div>
     </div>
   )
