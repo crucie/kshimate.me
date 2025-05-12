@@ -3,7 +3,7 @@ import React from 'react'
 function Background({children}) {
   return (
     <div 
-      className="w-full min-h-screen h-full p-5" 
+      className="w-full min-h-screen h-auto p-5 overflow-auto" 
       style={{
         backgroundImage: `
           linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px), 

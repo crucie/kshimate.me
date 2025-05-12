@@ -10,18 +10,19 @@ import Nav from './Components/Navigation/Nav.jsx'
 export default function Layout() {
   return (
     <>
-    <Background>
-        <Draggable allowDragOnlyWhenScrolled>
-              <Nav/>
-        </Draggable>
-        <Outlet/>
-    </Background>
-    {/* <InteractiveGrid>
-        <Draggable allowDragOnlyWhenScrolled>
-              <Nav/>
-        </Draggable>
-        <Outlet/>
-    </InteractiveGrid> */}
+      <Background >
+          <Draggable allowDragOnlyWhenScrolled>
+                <Nav/>
+          </Draggable>
+          <Outlet/>
+      </Background>
+      {/* <InteractiveGrid>
+          <Draggable allowDragOnlyWhenScrolled>
+                <Nav/>
+          </Draggable>
+          <Outlet/>
+      </InteractiveGrid> */}
+    
     </>
   )
 }

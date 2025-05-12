@@ -10,13 +10,15 @@ function Home() {
       
       YO
       <Draggable>
-          <UserCard
+          {/* <UserCard
             Title="John Doe"
             Description="A software engineer with a passion for open-source."
             Image="https://via.placeholder.com/150"
             Tags={['React', 'JavaScript', 'CSS']}
-          />
+          /> */}
+
       </Draggable>
+      
     </div>
   )
 }
