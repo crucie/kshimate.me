@@ -17,9 +17,10 @@ export default function Layout() {
         <Outlet/>
     </Background>
     {/* <InteractiveGrid>
-        <Header/>
-            <Outlet/>
-        <Footer/>
+        <Draggable allowDragOnlyWhenScrolled>
+              <Nav/>
+        </Draggable>
+        <Outlet/>
     </InteractiveGrid> */}
     </>
   )
