@@ -63,27 +63,32 @@ function Nothing() {
 
   return (
     <div className='m-8'>
-        <div className='w-100 h-100 bg-black text-white flex justify-center p-4 flex-col'>
-            <h1 className='text-2xl font-mono font-semibold'>
-                IF YOU MOVE YOU LOSE
-            </h1>
+        
+        <div className='w-100 h-100 bg-black text-white flex p-4 flex-col justify-start items-center'>
+        <h1 className='text-4xl  font-mono font-semibold flex w-full justify-center'>
+                DO NOTHING...
+        </h1>
+            <div className='m-auto h-full flex flex-col justify-center items-center'> 
             { 
                 !timeStart ? (
                     <>
-                        <h2> time start turned true</h2>
-                        <p>this this is the P</p>
+                        <h2 className='mx-auto p-4 font-bold text-2xl'>YES! DON'T DO ANYTHING</h2>
+                        <p>Game Rules: press start and leave your system idle, if you touch, move or click anything you loseee</p>
                         <button 
                         onClick={startGame}
-                        className='bg-white text-black text-mono p-4'>
+                        className='bg-white text-black text-mono p-4 m-2'>
                             PRESS TO START
                         </button>
                         
                     </>
 
                 ): hasLost? (
-                    <>
-                        <p>has lost already</p>
-                    </>
+                    <div className='w-full justify-center h-full flex flex-col'>
+                        <p className='text-xl font-light text-center w-full  justify-end '>YOU MOVED: so addicted you are...duhhh~</p>
+                        <button 
+                        onClick={resetGame} 
+                        className='bg-white text-black p-4 items-center m-2'>RESET GAME</button>
+                    </div>
 
                 ): (
                     <>
@@ -91,7 +96,7 @@ function Nothing() {
                     </>
                 )
             }
-
+            </div>
            
         </div>
 
