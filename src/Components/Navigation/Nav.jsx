@@ -3,10 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { Menu, X, Circle } from 'lucide-react';
 
 const Nav = () => {
+
   const navRef = useRef(null);
   const dragIconRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: (window.innerWidth/2) -200, y: 20 });
   const [dragging, setDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
 
@@ -62,7 +63,7 @@ const Nav = () => {
 
       if (isMostlyOut) {
         // Snap back into view
-        setPosition({ x: 10, y: 10 });
+        setPosition({ x: (window.innerWidth/2) - 200, y: 10 });
       }
     };
 

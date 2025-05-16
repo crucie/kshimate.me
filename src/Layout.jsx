@@ -11,15 +11,14 @@ export default function Layout() {
   return (
     <>
 
-      <Background >
-          <div className='top-4 bg-amber-800 h-screen flex justify-center'>
-            <Draggable allowDragOnlyWhenScrolled>
-                  <Nav/>
-            </Draggable>
-          
-          <Outlet/>
-          </div>
-      </Background>
+      <div className='min-w-screen w-full min-h-screen h-full '>
+        <Background >
+              <Draggable allowDragOnlyWhenScrolled>
+                    <Nav/>
+              </Draggable>
+            <Outlet/>
+        </Background>
+      </div>
       {/* <InteractiveGrid>
           <Draggable allowDragOnlyWhenScrolled>
                 <Nav/>
