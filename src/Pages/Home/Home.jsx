@@ -6,17 +6,14 @@ import Nav from '../../Components/Navigation/Nav'
 
 function Home() {
   return (
-    <div>
-      
-      YO
+    <div className='w-full flex justify-center'>
       <Draggable>
-          {/* <UserCard
-            Title="John Doe"
-            Description="A software engineer with a passion for open-source."
-            Image="https://via.placeholder.com/150"
-            Tags={['React', 'JavaScript', 'CSS']}
-          /> */}
-
+          <UserCard
+            Title="AMAY MISHRA"
+            Description="A silly guy on screen. Try dragging this card >.<"
+            Image="https://via.placeholder.com/300"
+          />
+          
       </Draggable>
       
     </div>

@@ -10,11 +10,15 @@ import Nav from './Components/Navigation/Nav.jsx'
 export default function Layout() {
   return (
     <>
+
       <Background >
-          <Draggable allowDragOnlyWhenScrolled>
-                <Nav/>
-          </Draggable>
+          <div className='top-4 bg-amber-800 h-screen flex justify-center'>
+            <Draggable allowDragOnlyWhenScrolled>
+                  <Nav/>
+            </Draggable>
+          
           <Outlet/>
+          </div>
       </Background>
       {/* <InteractiveGrid>
           <Draggable allowDragOnlyWhenScrolled>

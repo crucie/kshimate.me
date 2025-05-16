@@ -30,11 +30,8 @@ function Projects() {
       <h1 className='text-6xl font-bold font-serif mb-12'>
         Projects
       </h1>
-      
-      
+    
     </div>
-
-
   )
 }
 
