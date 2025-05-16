@@ -1,72 +1,10 @@
-// import { useState, useEffect, useRef } from 'react';
-
-// export default function Draggable({ children, allowDragOnlyWhenScrolled }) {
-//   const ref = useRef(null);
-//   const [dragging, setDragging] = useState(false);
-//   const [position, setPosition] = useState({ x: 0, y: 0 });
-//   const offset = useRef({ x: 0, y: 0 });
-//   const [canDrag, setCanDrag] = useState(!allowDragOnlyWhenScrolled);
-
-//   useEffect(() => {
-//     if (allowDragOnlyWhenScrolled) {
-//       const handleScroll = () => {
-//         setCanDrag(window.scrollY > 10);
-//       };
-//       window.addEventListener('scroll', handleScroll);
-//       return () => window.removeEventListener('scroll', handleScroll);
-//     }
-//   }, [allowDragOnlyWhenScrolled]);
-
-//   useEffect(() => {
-//     const handleMouseMove = (e) => {
-//       if (dragging && canDrag && ref.current) {
-//         const newX = e.clientX - offset.current.x;
-//         const newY = e.clientY - offset.current.y;
-//         setPosition({ x: newX, y: newY });
-//       }
-//     };
-//     const handleMouseUp = () => setDragging(false);
-
-//     document.addEventListener('mousemove', handleMouseMove);
-//     document.addEventListener('mouseup', handleMouseUp);
-//     return () => {
-//       document.removeEventListener('mousemove', handleMouseMove);
-//       document.removeEventListener('mouseup', handleMouseUp);
-//     };
-//   }, [dragging, canDrag]);
-
-//   const handleMouseDown = (e) => {
-//     if (!canDrag) return;
-//     if (ref.current) {
-//       offset.current = {
-//         x: e.clientX - ref.current.offsetLeft,
-//         y: e.clientY - ref.current.offsetTop,
-//       };
-//       setDragging(true);
-//     }
-//   };
-
-//   return (
-//     <div
-//       ref={ref}
-//       onMouseDown={handleMouseDown}
-//       className="relative"
-//       style={{ left: position.x, top: position.y }}
-//     >
-//       {children}
-//     </div>
-//   );
-// }
-
-
-
 import { useState, useEffect, useRef } from 'react';
 
 export default function Draggable({ 
   children, 
   allowDragOnlyWhenScrolled = false,
-  initialPosition = null, // Allow setting initial position
-  dragHandleClassName = null, // Optional class name for drag handle
+  initialPosition = null,
+  dragHandleClassName = null,
 }) {
   // Container reference to track the element
   const containerRef = useRef(null);
@@ -74,54 +12,68 @@ export default function Draggable({
   // Track if currently dragging
   const [dragging, setDragging] = useState(false);
   
-  // Store the current position
+  // Position state - only updated when drag ends for smoother operation
   const [position, setPosition] = useState({ x: 0, y: 0 });
   
-  // Store initial position to remember where element started
-  const [initialPos, setInitialPos] = useState(null);
+  // Use refs for real-time position tracking during drag
+  const currentPosition = useRef({ x: 0, y: 0 });
+  const lastMousePosition = useRef({ x: 0, y: 0 });
   
-  // Reference to store mouse offset during drag
-  const mouseOffset = useRef({ x: 0, y: 0 });
-  
-  // Whether dragging is allowed (used with allowDragOnlyWhenScrolled)
+  // Whether dragging is allowed
   const [canDrag, setCanDrag] = useState(!allowDragOnlyWhenScrolled);
 
   // Track if component is initialized
-  const isInitialized = useRef(false);
+  const initialized = useRef(false);
 
   // Initialize position once component mounts
   useEffect(() => {
-    if (!isInitialized.current && containerRef.current) {
-      // If initialPosition was provided, use it
+    if (!initialized.current && containerRef.current) {
+      let initialPos;
+      
       if (initialPosition) {
-        setPosition(initialPosition);
-        setInitialPos(initialPosition);
+        // Use provided initial position
+        initialPos = initialPosition;
       } else {
-        // Otherwise, maintain the default CSS positioning
+        // Calculate position from current layout
         const rect = containerRef.current.getBoundingClientRect();
         const computedStyle = window.getComputedStyle(containerRef.current);
         
-        // Get the original position considering CSS positioning
-        const originalLeft = rect.left - (parseFloat(computedStyle.marginLeft) || 0);
-        const originalTop = rect.top - (parseFloat(computedStyle.marginTop) || 0);
-        
-        const newPos = { x: originalLeft, y: originalTop };
-        setPosition(newPos);
-        setInitialPos(newPos);
+        // Get original position accounting for margins and scroll
+        initialPos = { 
+          x: rect.left + window.scrollX - (parseFloat(computedStyle.marginLeft) || 0), 
+          y: rect.top + window.scrollY - (parseFloat(computedStyle.marginTop) || 0)
+        };
       }
       
-      isInitialized.current = true;
+      // Set both state and ref
+      setPosition(initialPos);
+      currentPosition.current = initialPos;
+      
+      // Force a proper position calculation after initial render
+      setTimeout(() => {
+        if (containerRef.current) {
+          const updatedRect = containerRef.current.getBoundingClientRect();
+          const newPos = { 
+            x: updatedRect.left + window.scrollX, 
+            y: updatedRect.top + window.scrollY 
+          };
+          setPosition(newPos);
+          currentPosition.current = newPos;
+        }
+      }, 0);
+      
+      initialized.current = true;
     }
   }, [initialPosition]);
 
-  // Set up scroll listener if allowDragOnlyWhenScrolled is true
+  // Handle scroll detection for conditional dragging
   useEffect(() => {
     if (allowDragOnlyWhenScrolled) {
       const handleScroll = () => {
         setCanDrag(window.scrollY > 10);
       };
       
-      // Initialize value on mount
+      // Initialize scroll state
       handleScroll();
       
       window.addEventListener('scroll', handleScroll);
@@ -129,85 +81,159 @@ export default function Draggable({
     }
   }, [allowDragOnlyWhenScrolled]);
 
-  // Handle mouse/touch events for dragging
+  // Apply direct style updates for smooth dragging
   useEffect(() => {
-    // Handler for mouse movement during drag
-    const handleMouseMove = (e) => {
-      if (dragging && canDrag) {
-        e.preventDefault(); // Prevent text selection during drag
-        
-        // Calculate new position based on mouse movement and offset
-        const newX = e.clientX - mouseOffset.current.x;
-        const newY = e.clientY - mouseOffset.current.y;
-        
-        // Use requestAnimationFrame for smoother updates
-        requestAnimationFrame(() => {
-          setPosition({ x: newX, y: newY });
-        });
-      }
-    };
+    if (!containerRef.current) return;
+    
+    containerRef.current.style.left = `${position.x}px`;
+    containerRef.current.style.top = `${position.y}px`;
+  }, [position]);
 
-    // Handler for when the mouse button is released
-    const handleMouseUp = () => {
-      setDragging(false);
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-    };
-
-    // Add event listeners when dragging starts
-    if (dragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = 'grabbing';
-      document.body.style.userSelect = 'none'; // Prevent text selection during drag
-    }
-
-    // Clean up event listeners when dragging stops or component unmounts
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [dragging, canDrag]);
-
-  // Function to handle mouse down event
+  // Handle mouse down to start dragging
   const handleMouseDown = (e) => {
-    // Skip if dragging is not allowed or if target is not the drag handle (when specified)
-    if (!canDrag) return;
+    if (!canDrag || !containerRef.current) return;
+    
+    // Check if using drag handle and clicked on valid element
     if (dragHandleClassName && 
         !e.target.classList.contains(dragHandleClassName) &&
         !e.target.closest(`.${dragHandleClassName}`)) {
       return;
     }
     
-    // Prevent default to avoid text selection
     e.preventDefault();
     
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
+    // Store mouse starting position
+    lastMousePosition.current = { x: e.clientX, y: e.clientY };
+    
+    // Start dragging
+    setDragging(true);
+    
+    // Set visual cues
+    document.body.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
+    
+    // Setup direct DOM manipulation for smooth dragging
+    const handleMouseMove = (moveEvent) => {
+      // Calculate movement delta
+      const deltaX = moveEvent.clientX - lastMousePosition.current.x;
+      const deltaY = moveEvent.clientY - lastMousePosition.current.y;
       
-      // Calculate offset from current mouse position to element's top-left corner
-      mouseOffset.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+      // Update reference positions
+      lastMousePosition.current = { x: moveEvent.clientX, y: moveEvent.clientY };
+      currentPosition.current = {
+        x: currentPosition.current.x + deltaX,
+        y: currentPosition.current.y + deltaY
       };
       
-      setDragging(true);
-      document.body.style.cursor = 'grabbing';
+      // Apply position directly to DOM for maximum smoothness
+      if (containerRef.current) {
+        containerRef.current.style.left = `${currentPosition.current.x}px`;
+        containerRef.current.style.top = `${currentPosition.current.y}px`;
+      }
+    };
+    
+    const handleMouseUp = () => {
+      // End dragging
+      setDragging(false);
+      
+      // Sync React state with final position
+      setPosition({ ...currentPosition.current });
+      
+      // Reset visual cues
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      
+      // Remove event listeners
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    // Add event listeners
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  // Support for touch devices
+  const handleTouchStart = (e) => {
+    if (!canDrag || !containerRef.current || e.touches.length !== 1) return;
+    
+    // Check if using drag handle and touched on valid element
+    if (dragHandleClassName && 
+        !e.target.classList.contains(dragHandleClassName) &&
+        !e.target.closest(`.${dragHandleClassName}`)) {
+      return;
     }
+    
+    e.preventDefault();
+    
+    // Store touch starting position
+    const touch = e.touches[0];
+    lastMousePosition.current = { x: touch.clientX, y: touch.clientY };
+    
+    // Start dragging
+    setDragging(true);
+    
+    // Set visual cues
+    document.body.style.userSelect = 'none';
+    
+    // Setup direct DOM manipulation for smooth dragging
+    const handleTouchMove = (moveEvent) => {
+      if (moveEvent.touches.length !== 1) return;
+      
+      const touch = moveEvent.touches[0];
+      
+      // Calculate movement delta
+      const deltaX = touch.clientX - lastMousePosition.current.x;
+      const deltaY = touch.clientY - lastMousePosition.current.y;
+      
+      // Update reference positions
+      lastMousePosition.current = { x: touch.clientX, y: touch.clientY };
+      currentPosition.current = {
+        x: currentPosition.current.x + deltaX,
+        y: currentPosition.current.y + deltaY
+      };
+      
+      // Apply position directly to DOM for maximum smoothness
+      if (containerRef.current) {
+        containerRef.current.style.left = `${currentPosition.current.x}px`;
+        containerRef.current.style.top = `${currentPosition.current.y}px`;
+      }
+    };
+    
+    const handleTouchEnd = () => {
+      // End dragging
+      setDragging(false);
+      
+      // Sync React state with final position
+      setPosition({ ...currentPosition.current });
+      
+      // Reset visual cues
+      document.body.style.userSelect = '';
+      
+      // Remove event listeners
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+    
+    // Add event listeners
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
   };
 
   return (
     <div
       ref={containerRef}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       style={{
         position: 'absolute',
         left: `${position.x}px`,
         top: `${position.y}px`,
-        touchAction: 'none', // Prevent scrolling on touch devices when dragging
+        touchAction: 'none',
         cursor: canDrag ? 'grab' : 'default',
-        transition: dragging ? 'none' : 'box-shadow 0.2s',
-        zIndex: dragging ? 1000 : 'auto', // Raise z-index when dragging
+        zIndex: dragging ? 1000 : 'auto',
+        transform: 'translate3d(0,0,0)', // Force GPU acceleration
+        willChange: dragging ? 'left, top' : 'auto', // Hint to browser for optimization
       }}
     >
       {children}

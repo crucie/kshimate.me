@@ -11,7 +11,7 @@ function Home() {
           <UserCard
             Title="AMAY MISHRA"
             Description="A silly guy on screen. Try dragging this card >.<"
-            Image="https://via.placeholder.com/300"
+            Image="https://res.cloudinary.com/dewuod6wo/image/upload/v1747423300/imposter_1_ueyksb.png"
           />
           
       </Draggable>
