@@ -5,6 +5,7 @@ export default function Draggable({
   allowDragOnlyWhenScrolled = false,
   initialPosition = null,
   dragHandleClassName = null,
+  posX = 0 , posY = 0 
 }) {
   // Container reference to track the element
   const containerRef = useRef(null);
@@ -13,7 +14,7 @@ export default function Draggable({
   const [dragging, setDragging] = useState(false);
   
   // Position state - only updated when drag ends for smoother operation
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x : posX, y : posY });
   
   // Use refs for real-time position tracking during drag
   const currentPosition = useRef({ x: 0, y: 0 });

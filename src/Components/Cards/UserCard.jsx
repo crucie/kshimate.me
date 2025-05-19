@@ -5,7 +5,7 @@ const UserCard = ({Title, Description, Image, Tags}) => {
 
 
   return (
-    <div className='flex flex-col p-4 items-center w-[300px] rounded-xl h-full aspect-[3/4] border-1 shadow-md transition-300 bg-gray-50 hover:scale-102 m-4'>
+    <div className='flex flex-col p-4 items-center w-[300px] rounded-xl h-full aspect-[3/4] border-1 shadow-xl transition-300 bg-gray-50 hover:scale-102 m-4'>
         <div className='h-2/3 w-full bg-gray-50 border-2 border-dashed my-2'>
           {Image && <img src={Image} alt={Title} className='h-full w-full object-cover rounded-md'/>}
         </div>

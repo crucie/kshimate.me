@@ -10,7 +10,7 @@ const Nav = () => {
   const [position, setPosition] = useState({ x: (window.innerWidth/2) -200, y: 20 });
   const [dragging, setDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
-
+ 
   const navLinks = [
     { name: 'HOME', path: '/' },
     { name: 'PROJECTS', path: '/projects' },
