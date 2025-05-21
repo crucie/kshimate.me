@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Header from '../../Components/Header/Header'
 import UserCard from '../../Components/Cards/UserCard'
 import Draggable from '../../Components/Quirky/Draggable'
 import Nav from '../../Components/Navigation/Nav'
 import Card from '../../Components/Cards/Card'
 import WebPrompter from '../Projects/Scraps/DoNothing/Teleprompter/WebPrompter'
+import { TableOfContents } from 'lucide-react'
 
 function Home() {
   const posX = window.innerWidth/4
   const posY = window.innerWidth/8
 
+  const [webPrompterActive, setWebPrompterActive] = useState(false)
+
+  const togglePrompter = () => {
+    setWebPrompterActive(!webPrompterActive)
+    console.log(webPrompterActive)
+  }
+
   return (
-    <div className='w-full flex justify-center'>
+    <div className='w-full h-full flex justify-center'>
       <Draggable posX={posX} posY={posY}>
           <UserCard
             Title="AMAY MISHRA"
@@ -19,12 +27,19 @@ function Home() {
             Image="https://res.cloudinary.com/dewuod6wo/image/upload/v1747423300/imposter_1_ueyksb.png"
           />
       </Draggable>
+      <button 
+      className='border p-6 text-xl bg-gray-400/50 mt-100'
+      onClick={togglePrompter}>
+        GET PROMPTER
+      </button>
+      {webPrompterActive && 
       <Draggable posX={posX+500} posY={posY+200}>
-        
-      </Draggable>
-      <div className=' w-full mt-200'>
+        <div className=' bg-amber-500/'>
           <WebPrompter/>
-      </div>
+        </div>
+      </Draggable> 
+      }
+      
     </div>
   )
 }

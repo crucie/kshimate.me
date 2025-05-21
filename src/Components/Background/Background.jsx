@@ -18,7 +18,7 @@ function Background({children}) {
           zIndex: -1, // Place grid behind content
         }}
       />
-      <div className="relative w-full min-h-screen p-5 overflow-auto">
+      <div className="relative w-full min-h-screen p-5 ">
         {children}
       </div>
     </div>

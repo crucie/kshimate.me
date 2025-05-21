@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Children } from 'react'
 
-function Card() {
+const Card = ({Children}) => {
   return (
-    <div className='w-full h-full'>
-
+    <div className='w-full h-full bg-amber-400/30'>
+      {Children}
     </div>
   )
 }

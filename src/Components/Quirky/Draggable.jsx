@@ -132,7 +132,7 @@ export default function Draggable({
         containerRef.current.style.top = `${currentPosition.current.y}px`;
       }
     };
-    
+     
     const handleMouseUp = () => {
       // End dragging
       setDragging(false);
