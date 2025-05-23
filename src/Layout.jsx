@@ -19,13 +19,6 @@ export default function Layout() {
             <Outlet/>
         </Background>
       </div>
-      {/* <InteractiveGrid>
-          <Draggable allowDragOnlyWhenScrolled>
-                <Nav/>
-          </Draggable>
-          <Outlet/>
-      </InteractiveGrid> */}
-    
     </>
   )
 }
