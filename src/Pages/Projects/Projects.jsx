@@ -28,7 +28,7 @@ function Projects() {
   return (
     <div className='flex w-full min-h-screen flex-col align-middle items-center p-8'>
       <h1 className='text-6xl font-bold font-serif mb-12'>
-        Projects
+        ...
       </h1>
     
     </div>
