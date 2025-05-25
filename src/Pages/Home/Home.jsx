@@ -27,7 +27,7 @@ function Home() {
             Image="https://res.cloudinary.com/dewuod6wo/image/upload/v1747423300/imposter_1_ueyksb.png"
           />
       </Draggable>
-      <button 
+      {/* <button 
       className='border p-6 text-xl bg-gray-400/50 mt-100'
       onClick={togglePrompter}>
         GET PROMPTER
@@ -39,7 +39,15 @@ function Home() {
         </div>
       </Draggable> 
       }
-      
+       */}
+
+      <div>
+        <div className='border w-250 h-100 m-4 bg-white p-4'>
+          >BOX for all
+        </div>
+        
+      </div>
+
     </div>
   )
 }
