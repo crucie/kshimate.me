@@ -43,8 +43,7 @@ function Home() {
 
       <div>
         <div className='border w-250 h-100 m-4 bg-white p-4'>
-          BOX for all
-          BLAH BLAH BLAH
+          enter the contents here
         </div>
         
       </div>
